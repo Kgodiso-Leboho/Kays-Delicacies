@@ -46,7 +46,7 @@ export async function registerUser(req: AuthRequest, res: Response) {
 
         const token = generateToken(newUser.rows[0]);
         res.cookie('token', token, cookieOptions);
-        return res.status(201).json({ message: 'User created successfully', user: newUser.rows[0], token });
+        return res.status(201).json({ message: 'User created successfully', user: newUser.rows[0]});
     }
     catch (error) {
         console.error('Error creating user:', error);
@@ -85,7 +85,6 @@ export async function loginUser(req: AuthRequest, res: Response) {
                 full_name: userData.full_name,
                 email: userData.email
             },
-        
         })
 
         return res.status(200).json({ message: 'User logged in successfully', user: user.rows[0], token }); 
@@ -105,4 +104,60 @@ export async function getDataOfLoggedInUser(req: AuthRequest, res: Response) {
 export async function logoutUser(req: AuthRequest, res: Response) {
     res.cookie('token', '', { ...cookieOptions, maxAge: 1 });
     res.json({ message: 'User logged out successfully' });
+}
+
+export async function forgotPassword(req: AuthRequest, res: Response) {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+
+        if (user.rows.length === 0) {
+            return res.status(400).json({ message: 'iF an account with this email exists, then an email will be sent' });
+        }
+
+        const resetToken = jwt.sign({ id: user.rows[0].id }, JWT_SECRET, { expiresIn: '15m' });
+
+        
+        
+    } catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
+export async function resetPassword(req: AuthRequest, res: Response) {
+    try {
+        const { token, newPassword } = req.body;
+
+        if (!token || !newPassword) {
+            return res.status(400).json({ message: 'Token and new password are required' });
+        }
+
+        const decoded = jwt.verify(token, JWT_SECRET) as { id: number };
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+        const result = await pool.query(
+            'UPDATE users SET password = $1 WHERE id = $2 RETURNING id',
+            [hashedPassword, decoded.id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json({ message: 'Password has been reset successfully' });
+
+    } catch (error) {
+        if (error instanceof jwt.TokenExpiredError) {
+            return res.status(401).json({ message: 'Token has expired' });
+        }
+        return res.status(500).json({ message: 'Internal server error' });
+    }
 }
