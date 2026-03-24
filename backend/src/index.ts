@@ -1,17 +1,24 @@
 import express from 'express';
-const app = express();
+import cors from 'cors';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import authRoutes from "./routes/auth.Routes";
+
 dotenv.config()
-import cors from 'cors'
 
-app.use(cors())
-app.use(express.json())
+const app = express();
 
-let PORT: number = process.env.PORT;
+app.use(cors({
+    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    credentials: true,
+}))
 
-if (!PORT) {
-    PORT = 5432;
-}
+app.use(express.json());
+app.use(cookieParser())
+
+app.use('/api/auth', authRoutes);
+
+let PORT = Number(process.env.PORT) || 5000;
 
 app.listen(PORT, () => {
     console.log(`App is listening on PORT: ${PORT}`)

@@ -1,5 +1,5 @@
 export interface UserPayload {
-    id: string
+    id: number
     full_name: string;
     email: string;
     role?: 'user' | 'admin';
@@ -7,5 +7,5 @@ export interface UserPayload {
 
 export interface AuthResponse {
     user?: UserPayload;
-    message: string;
+    token: string;
 }

@@ -78,11 +78,31 @@ export async function loginUser(req: AuthRequest, res: Response) {
 
         const token = generateToken(user.rows[0]);
         res.cookie('token', token, cookieOptions);
-        return res.status(200).json({ message: 'User logged in successfully', user: user.rows[0], token });
 
+        res.json({
+            user: {
+                id: userData.id,
+                full_name: userData.full_name,
+                email: userData.email
+            },
+        
+        })
+
+        return res.status(200).json({ message: 'User logged in successfully', user: user.rows[0], token }); 
     }
     catch (error) {
         console.error('Error logging in user:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
+}
+
+export async function getDataOfLoggedInUser(req: AuthRequest, res: Response) {
+    res.json(req.user);
+
+    // return the info of the logged in user
+}
+
+export async function logoutUser(req: AuthRequest, res: Response) {
+    res.cookie('token', '', { ...cookieOptions, maxAge: 1 });
+    res.json({ message: 'User logged out successfully' });
 }

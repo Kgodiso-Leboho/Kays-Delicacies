@@ -1,8 +1,18 @@
 import express from 'express';
-import { registerUser } from '../controllers/auth.Controller.js';
+import { getDataOfLoggedInUser, loginUser, logoutUser, registerUser } from '../controllers/auth.Controller.js';
+import { authMiddleware } from '../middleware/auth.middleware.js';
 const router = express.Router();
 
 // Register a new user
-router.post('register', registerUser)
+router.post('/register', registerUser);
+
+// User login
+router.post('/login', loginUser);
+
+// Get current user info
+router.get('/me', authMiddleware , getDataOfLoggedInUser)
+
+// User Logout
+router.post('/logout', logoutUser);
 
 export default router;
