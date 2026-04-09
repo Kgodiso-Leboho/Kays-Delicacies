@@ -65,7 +65,7 @@ export async function loginUser(req: AuthRequest, res: Response) {
         const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
         if (user.rows.length === 0) {
-            return res.status(400).json({ message: 'Invalid email or password' });
+            return res.status(400).json({ message: 'Invalid email' });
         }
 
         const userData = user.rows[0];
@@ -122,7 +122,7 @@ export async function forgotPassword(req: AuthRequest, res: Response) {
 
         const resetToken = jwt.sign({ id: user.rows[0].id }, JWT_SECRET, { expiresIn: '15m' });
 
-        
+
         
     } catch (error) {
         console.error('Error:', error);

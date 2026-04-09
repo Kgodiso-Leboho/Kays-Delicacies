@@ -1,7 +1,3 @@
-CREATE DATABASE IF NOT EXISTS kays_delicaciesDB;
-
-USE kays_delicaciesDB;
-
 CREATE TYPE user_role AS ENUM ('admin', 'customer');
 
 CREATE TABLE IF NOT EXISTS users (

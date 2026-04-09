@@ -11,7 +11,9 @@ export async function authMiddleware (req: AuthRequest, res: Response, next: Nex
         const token = req.cookies.token;
 
         if (!token) {
-            return res.status(401).json({ message: 'Unauthorized, no token provided' });
+            return res.status(401).json({
+                message: 'Unauthorized, no token provided' 
+            });
         }
 
         const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
@@ -23,7 +25,9 @@ export async function authMiddleware (req: AuthRequest, res: Response, next: Nex
         )
 
         if(user.rows.length === 0){
-            return res.status(401).json({message: "Unauthorized, user was not found"});
+            return res.status(401).json({
+                message: "Unauthorized, user was not found"
+            });
         }
 
         req.user = user.rows[0];
@@ -31,7 +35,27 @@ export async function authMiddleware (req: AuthRequest, res: Response, next: Nex
         
     } catch (error) {
         console.error('Authentication error:', error);
-        return res.status(401).json({ message: 'Unauthorized, token failed' });
+        return res.status(401).json({
+            message: 'Unauthorized, token failed'
+        });
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
