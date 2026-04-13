@@ -4,6 +4,9 @@ import type { Response, CookieOptions } from "express";
 import type { AuthRequest } from "../types/express.d.js";
 import type { User } from "../types/models.js";
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
+// import passport from 'passport';
+// import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
 const cookieOptions: CookieOptions = {
     httpOnly: true,
@@ -117,10 +120,12 @@ export async function forgotPassword(req: AuthRequest, res: Response) {
         const user = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
 
         if (user.rows.length === 0) {
-            return res.status(400).json({ message: 'iF an account with this email exists, then an email will be sent' });
+            return res.status(400).json({ message: 'If an account with this email exists, then an email will be sent' });
         }
 
-        const resetToken = jwt.sign({ id: user.rows[0].id }, JWT_SECRET, { expiresIn: '15m' });
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+        const resetTokenExpiry = Date.now() + 3600000; // 1 hour
 
 
         
@@ -161,3 +166,4 @@ export async function resetPassword(req: AuthRequest, res: Response) {
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
+
