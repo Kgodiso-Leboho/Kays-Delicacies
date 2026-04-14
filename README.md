@@ -1,4 +1,6 @@
 A full-stack management and ordering platform designed for Kays Delicacies, specializing in gourmet Kotas and baked goods.
+
+
 Features
 ​Digital Menu: Dynamic display of Kotas, snacks, and pastries.
 ​Ordering System: Streamlined cart and checkout process for local customers.
