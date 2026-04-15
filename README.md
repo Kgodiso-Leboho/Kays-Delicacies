@@ -38,7 +38,8 @@ Database
 PostgreSQL (PERN Stack)
 State Management
 Redux Toolkit / Context API
-⚙️ Installation & Setup
+
+*Installation & Setup*
 1. Clone the repository
 git clone https://github.com/your-username/kays-delicacies.git
 cd kays-delicacies
