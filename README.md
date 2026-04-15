@@ -27,7 +27,7 @@ The platform enables seamless ordering for customers and efficient management fo
 - Built with Tailwind CSS
 - Glassmorphism-inspired interface
 
-**Tech Stack**
+## **Tech Stack**
 
 Frontend
 - React.js
