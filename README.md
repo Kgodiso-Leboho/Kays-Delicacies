@@ -5,7 +5,7 @@ The platform enables seamless ordering for customers and efficient management fo
 
 Features
 
-** Digital Menu
+** Digital Menu **
 
 Dynamic display of kotas, snacks, and pastries
 Clean, responsive UI for easy browsing
