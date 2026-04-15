@@ -53,7 +53,8 @@ npm run dev
 cd frontend
 npm install
 npm run dev
-🔑 Environment Variables
+
+**Environment Variables**
 
 Create a .env file in the backend directory:
 
