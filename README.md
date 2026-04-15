@@ -4,21 +4,29 @@ A modern full-stack web application designed for Kays Delicacies, specializing i
 The platform enables seamless ordering for customers and efficient management for administrators.
 
 Features
+
 Digital Menu
 Dynamic display of kotas, snacks, and pastries
 Clean, responsive UI for easy browsing
-🛒 Ordering System
+
+Ordering System
+
 Add-to-cart functionality
 Smooth checkout experience for local customers
-📊 Admin Dashboard
+
+Admin Dashboard
+
 Inventory management
 Order tracking and management
 Centralized control panel for operations
-🎨 Modern UI/UX
+
+Modern UI/UX
+
 Fully responsive design
 Built with Tailwind CSS
 Glassmorphism-inspired interface
-🛠️ Tech Stack
+
+Tech Stack
 Frontend
 React.js
 Tailwind CSS
