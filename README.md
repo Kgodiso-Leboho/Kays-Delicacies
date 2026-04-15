@@ -24,19 +24,31 @@ Centralized control panel for operations
 **Modern UI/UX**
 
 Fully responsive design
+
 Built with Tailwind CSS
+
 Glassmorphism-inspired interface
 
-Tech Stack
+**Tech Stack**
+
 Frontend
+
 React.js
+
 Tailwind CSS
+
 Backend
+
 Node.js
+
 Express.js
+
 Database
+
 PostgreSQL (PERN Stack)
+
 State Management
+
 Redux Toolkit / Context API
 
 *Installation & Setup*
