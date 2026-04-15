@@ -7,25 +7,25 @@ The platform enables seamless ordering for customers and efficient management fo
 
 **- Digital Menu**
 
--- Dynamic display of kotas, snacks, and pastries
--- Clean, responsive UI for easy browsing
+- Dynamic display of kotas, snacks, and pastries
+ Clean, responsive UI for easy browsing
 
-**- Ordering System**
+** Ordering System**
 
--- Add-to-cart functionality
--- Smooth checkout experience for local customers
+- Add-to-cart functionality
+- Smooth checkout experience for local customers
 
-**- Admin Dashboard**
+** Admin Dashboard**
 
--- Inventory management
--- Order tracking and management
--- Centralized control panel for operations
+- Inventory management
+- Order tracking and management
+- Centralized control panel for operations
 
-**- Modern UI/UX**
+** Modern UI/UX**
 
--- Fully responsive design
--- Built with Tailwind CSS
--- Glassmorphism-inspired interface
+- Fully responsive design
+- Built with Tailwind CSS
+- Glassmorphism-inspired interface
 
 **Tech Stack**
 
