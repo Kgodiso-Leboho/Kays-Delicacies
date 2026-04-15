@@ -29,11 +29,11 @@ The platform enables seamless ordering for customers and efficient management fo
 
 ## **Tech Stack**
 
-Frontend
+### Frontend
 - React.js
 - Tailwind CSS
 
-Backend
+### Backend
 - Node.js
 - Express.js
 - Database
