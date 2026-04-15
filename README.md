@@ -1,4 +1,4 @@
-#Kays Delicacies – Full-Stack Ordering Platform
+# Kays Delicacies – Full-Stack Ordering Platform
 
 A modern full-stack web application designed for Kays Delicacies, specializing in gourmet Kotas and baked goods.
 The platform enables seamless ordering for customers and efficient management for administrators.
