@@ -2,6 +2,10 @@ import express from 'express';
 import { getDataOfLoggedInUser, loginUser, logoutUser, registerUser } from '../controllers/auth.Controller.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 const router = express.Router();
+import { apiLimiter } from '../utils/rateLimiter.js';
+
+// Apply rate limiter to all auth routes
+router.use(apiLimiter);
 
 // Register a new user
 router.post('/register', registerUser);
