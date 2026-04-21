@@ -5,6 +5,7 @@ import type { AuthRequest } from "../types/express.d.js";
 import type { User } from "../types/models.js";
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
+import { sendEmail } from "../utils/sendEmail.js";
 // import passport from 'passport';
 // import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 
@@ -127,7 +128,15 @@ export async function forgotPassword(req: AuthRequest, res: Response) {
         const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
         const resetTokenExpiry = Date.now() + 3600000; // 1 hour
 
+        const updatedUser = await pool.query('UPDATE users SET reset_token = $1, reset_token_expiry = $2 WHERE email = $3 RETURNING id',
+            [resetTokenHash, resetTokenExpiry, email]
+        );
 
+        const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${resetToken}`;
+
+        await sendEmail(email, 'Password Reset Request', `You requested a password reset. Click the link to reset your password: ${resetUrl}`, `<p>You requested a password reset. Click the link to reset your password: <a href="${resetUrl}">${resetUrl}</a></p>`);
+
+        return res.status(200).json({ message: 'If an account with this email exists, then an email will be sent' });
         
     } catch (error) {
         console.error('Error:', error);
