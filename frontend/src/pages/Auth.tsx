@@ -1,175 +1,169 @@
-import { useState } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { UtensilsCrossed, Mail, Lock, User, Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
+import { toast } from "sonner";
+
+function FloatingInput({
+  label,
+  type = "text",
+}: {
+  label: string;
+  type?: string;
+}) {
+  return (
+    <div className="relative">
+      <input
+        type={type}
+        required
+        placeholder=" "
+        className="peer w-full px-4 pt-5 pb-2 rounded-xl 
+        bg-white/5 border border-white/10 
+        text-white outline-none 
+        focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/30
+        transition"
+      />
+      <label
+        className="absolute left-4 top-2 text-gray-400 text-xs 
+        transition-all peer-placeholder-shown:top-3.5 
+        peer-placeholder-shown:text-sm 
+        peer-focus:top-2 peer-focus:text-xs peer-focus:text-yellow-400"
+      >
+        {label}
+      </label>
+    </div>
+  );
+}
 
 export default function Auth() {
-  const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
-
-  const [tab, setTab] = useState<'login' | 'signup'>(
-    searchParams.get('tab') === 'signup' ? 'signup' : 'login'
-  );
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [tab, setTab] = useState<"login" | "signup">("login");
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // Mock login
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     setTimeout(() => {
       setLoading(false);
-
-      if (email && password) {
-        toast.success('Logged in successfully!');
-        navigate('/menu');
-      } else {
-        toast.error('Invalid credentials');
-      }
-    }, 1000);
-  };
-
-  // Mock signup
-  const handleSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    setTimeout(() => {
-      setLoading(false);
-
-      if (email && password && fullName) {
-        toast.success('Account created successfully!');
-        setTab('login');
-      } else {
-        toast.error('Please fill in all fields');
-      }
-    }, 1000);
+      toast.success(tab === "login" ? "Welcome back!" : "Account created!");
+      if (tab === "login") navigate("/menu");
+      else setTab("login");
+    }, 1200);
   };
 
   return (
-    <>
-      <div className="mesh-bg" />
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <div className="w-full max-w-md animate-scale-in">
+    <div className="relative min-h-screen flex items-center justify-center bg-[#FFFFFF] overflow-hidden">
 
-          {/* Back */}
-          <Link
-            to="/"
-            className="mb-8 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" /> Back to home
-          </Link>
-
-          <div className="glass-strong rounded-3xl p-8">
-
-            {/* Logo */}
-            <div className="mb-6 flex flex-col items-center gap-3">
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/15">
-                <UtensilsCrossed className="h-7 w-7 text-primary" />
-              </div>
-
-              <h1 className="text-2xl font-black">
-                {tab === 'login' ? 'Welcome Back' : 'Create Account'}
-              </h1>
-
-              <p className="text-sm text-muted-foreground">
-                {tab === 'login'
-                  ? 'Sign in to your account'
-                  : 'Join Kays Delicacies today'}
-              </p>
-            </div>
-
-            {/* Tabs */}
-            <div className="mb-6 flex rounded-xl glass p-1">
-              {(['login', 'signup'] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={`flex-1 rounded-lg py-2 text-sm font-bold capitalize transition-all ${
-                    tab === t
-                      ? 'bg-primary text-primary-foreground shadow-md'
-                      : 'text-muted-foreground'
-                  }`}
-                >
-                  {t === 'login' ? 'Login' : 'Sign Up'}
-                </button>
-              ))}
-            </div>
-
-            <form
-              onSubmit={tab === 'login' ? handleLogin : handleSignup}
-              className="space-y-4"
-            >
-              {tab === 'signup' && (
-                <div className="relative">
-                  <User className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="Full name"
-                    required
-                    className="glass-input w-full rounded-xl py-3 pl-10 pr-4 text-sm outline-none"
-                  />
-                </div>
-              )}
-
-              <div className="relative">
-                <Mail className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email address"
-                  required
-                  className="glass-input w-full rounded-xl py-3 pl-10 pr-4 text-sm outline-none"
-                />
-              </div>
-
-              <div className="relative">
-                <Lock className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
-                <input
-                  type={showPw ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
-                  required
-                  minLength={6}
-                  className="glass-input w-full rounded-xl py-3 pl-10 pr-10 text-sm outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-3.5 text-muted-foreground"
-                >
-                  {showPw ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
-                  )}
-                </button>
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn-primary w-full disabled:opacity-50"
-              >
-                {loading
-                  ? 'Please wait...'
-                  : tab === 'login'
-                  ? 'Sign In'
-                  : 'Create Account'}
-              </button>
-            </form>
-          </div>
-        </div>
+      {/* 🌌 Background Glow */}
+      <div className="absolute inset-0">
+        <div className="absolute top-[-20%] left-1/2 w-[600px] h-[600px] bg-yellow-400/20 blur-[120px] rounded-full -translate-x-1/2" />
+        <div className="absolute bottom-[-20%] right-1/3 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full" />
       </div>
-    </>
+
+      {/* 🪞 Glass Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 40, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="relative z-10 w-full max-w-md p-8 rounded-3xl 
+        bg-white/10 backdrop-blur-xl 
+        border border-white/20 
+        shadow-[0_10px_40px_rgba(0,0,0,0.6)]"
+      >
+
+        {/* 🔰 Branding */}
+        <div className="text-center mb-8">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-yellow-400 flex items-center justify-center shadow-lg shadow-yellow-400/40" />
+          <h1 className="text-yellow-400 text-2xl font-bold mt-4">
+            Kays Delicacies
+          </h1>
+          <p className="text-gray-400 text-sm">
+            {tab === "login"
+              ? "Welcome back, sign in to continue"
+              : "Create your account"}
+          </p>
+        </div>
+
+        {/* 🔄 Tabs */}
+        <div className="flex bg-white/5 p-1 rounded-xl mb-6">
+          {["login", "signup"].map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t as any)}
+              className={`flex-1 py-2 text-sm font-semibold rounded-lg transition ${
+                tab === t
+                  ? "bg-yellow-400 text-black shadow-md"
+                  : "text-gray-400"
+              }`}
+            >
+              {t === "login" ? "Login" : "Sign Up"}
+            </button>
+          ))}
+        </div>
+
+        {/* 🧾 Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+
+          {tab === "signup" && (
+            <FloatingInput label="Full Name" />
+          )}
+
+          <FloatingInput label="Email Address" type="email" />
+
+          <div className="relative">
+            <FloatingInput
+              label="Password"
+              type={showPw ? "text" : "password"}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPw(!showPw)}
+              className="absolute right-3 top-3 text-gray-400 hover:text-white"
+            >
+              {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+
+          {/* 🔘 Button */}
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            disabled={loading}
+            className="w-full py-3 rounded-xl font-semibold 
+            bg-yellow-400 text-black 
+            shadow-lg shadow-yellow-400/40
+            hover:brightness-110 transition"
+          >
+            {loading ? "Processing..." : tab === "login" ? "Sign In" : "Create Account"}
+          </motion.button>
+        </form>
+
+        {/* 🔁 Switch */}
+        <p className="text-center text-sm text-gray-400 mt-6">
+          {tab === "login" ? (
+            <>
+              No account?{" "}
+              <button
+                onClick={() => setTab("signup")}
+                className="text-yellow-400 font-medium"
+              >
+                Sign up
+              </button>
+            </>
+          ) : (
+            <>
+              Already have one?{" "}
+              <button
+                onClick={() => setTab("login")}
+                className="text-yellow-400 font-medium"
+              >
+                Login
+              </button>
+            </>
+          )}
+        </p>
+      </motion.div>
+    </div>
   );
 }
