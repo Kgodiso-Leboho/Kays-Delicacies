@@ -152,14 +152,23 @@ export async function resetPassword(req: AuthRequest, res: Response) {
             return res.status(400).json({ message: 'Token and new password are required' });
         }
 
-        const decoded = jwt.verify(token, JWT_SECRET) as { id: number };
+        const resetTokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+        const user = await pool.query(
+            'SELECT * FROM users WHERE reset_token = $1 AND reset_token_expiry > $2',
+            [resetTokenHash, new Date()]
+        );
+
+        if (user.rows.length === 0) {
+            return res.status(404).json({ message: 'Invalid or expired reset token' });
+        }
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(newPassword, salt);
 
         const result = await pool.query(
-            'UPDATE users SET password = $1 WHERE id = $2 RETURNING id',
-            [hashedPassword, decoded.id]
+            'UPDATE users SET password = $1, reset_token = NULL, reset_token_expiry = NULL WHERE id = $2 RETURNING id',
+            [hashedPassword, user.rows[0].id]
         );
 
         if (result.rows.length === 0) {
@@ -169,9 +178,7 @@ export async function resetPassword(req: AuthRequest, res: Response) {
         return res.status(200).json({ message: 'Password has been reset successfully' });
 
     } catch (error) {
-        if (error instanceof jwt.TokenExpiredError) {
-            return res.status(401).json({ message: 'Token has expired' });
-        }
+        console.error('Error resetting password:', error);
         return res.status(500).json({ message: 'Internal server error' });
     }
 }
