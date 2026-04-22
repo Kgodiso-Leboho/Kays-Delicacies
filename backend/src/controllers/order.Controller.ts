@@ -3,29 +3,48 @@ import type { NextFunction, Response } from "express";
 import type { AuthRequest } from "../types/express.d.js";
 import type { User } from "../types/models.js";
 
+
+function totalPrice(items: any[]): number {
+    return items.reduce((total, item) => {
+        // 1. Get the base price of the item
+        const basePrice = Number(item.price) || 0;
+
+        // 2. Calculate the price of extras (if they exist)
+        let extrasTotal = 0;
+        if (item.extras && Array.isArray(item.extras)) {
+            extrasTotal = item.extras.reduce((sum: number, extra: any) => {
+                return sum + (Number(extra.price) || 0);
+            }, 0);
+        }
+
+        // 3. Multiply by quantity and add to the running total
+        const quantity = Number(item.quantity) || 1;
+        return total + (basePrice + extrasTotal) * quantity;
+    }, 0);
+}
+
 export async function createOrder(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-        const { user_id, items } = req.body;
+        const userId = req.user?.id;
+        const { items } = req.body;
 
-        if (!user_id || !items || !Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({ message: 'User ID and items are required' });
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ message: 'Items are required to place an order' });
         }
 
-        // Validate user exists
-        const userResult = await pool.query('SELECT id FROM users WHERE id = $1', [user_id]);
+        // Calculate verified total
+        const calculatedTotal = totalPrice(items);
 
-        if (userResult.rows.length === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-
-        // Insert order into database
+        // Insert order
         const orderResult = await pool.query(
-            'INSERT INTO orders (user_id, items) VALUES ($1, $2) RETURNING id',
-            [user_id, JSON.stringify(items)]
+            'INSERT INTO orders (user_id, items, price) VALUES ($1, $2, $3) RETURNING id',
+            [userId, JSON.stringify(items), calculatedTotal]
         );
 
-        return res.status(201).json({ message: 'Order created successfully', orderId: orderResult.rows[0].id });
+        return res.status(201).json({ 
+            message: 'Order created successfully', 
+            orderId: orderResult.rows[0].id 
+        });
 
     } catch (error) {
         next(error);
@@ -36,11 +55,7 @@ export async function getOrders(req: AuthRequest, res: Response, next: NextFunct
     try {
         const userId = req.user?.id;
 
-        if (!userId) {
-            return res.status(401).json({ message: 'Unauthorized' });
-        }
-
-        const ordersResult = await pool.query('SELECT id, items, created_at FROM orders WHERE user_id = $1', [userId]);
+        const ordersResult = await pool.query('SELECT id, items, created_at, status FROM orders WHERE user_id = $1', [userId]);
 
         return res.status(200).json({ orders: ordersResult.rows });
     } catch (error) {
@@ -108,3 +123,5 @@ export async function deleteOrder(req: AuthRequest, res: Response, next: NextFun
         next(error);
     }
 }
+
+
