@@ -20,7 +20,7 @@ export async function authMiddleware (req: AuthRequest, res: Response, next: Nex
 
         // Fetch user from the database to ensure that the user still exists and to get the latest user data
         const user = await pool.query(
-            "SELECT id, full_name, email FROM users where id = $1",
+            "SELECT id, full_name, email, is_admin FROM users where id = $1",
             [decoded.id]
         )
 
