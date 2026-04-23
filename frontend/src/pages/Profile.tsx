@@ -1,24 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../lib/store';
+import { useAuth } from '../context/AuthContext';
 import { Header } from '../components/Header';
 import { CartDrawer } from '../components/CartDrawer';
 import { User, Clock, Package, RefreshCw, LogOut } from 'lucide-react';
 
 export default function Profile() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const { orders, addKotaToCart, addBakeryToCart } = useStore();
   const [tab, setTab] = useState<'profile' | 'orders'>('profile');
-  const [name, setName] = useState(() => localStorage.getItem('kd-profile-name') || '');
   const [phone, setPhone] = useState(() => localStorage.getItem('kd-profile-phone') || '');
   const [editing, setEditing] = useState(false);
-  const [editName, setEditName] = useState(name);
   const [editPhone, setEditPhone] = useState(phone);
 
   const handleSave = () => {
-    localStorage.setItem('kd-profile-name', editName.trim());
     localStorage.setItem('kd-profile-phone', editPhone.trim());
-    setName(editName.trim());
     setPhone(editPhone.trim());
     setEditing(false);
   };
@@ -53,8 +51,8 @@ export default function Profile() {
           <div className="h-20 w-20 rounded-full bg-primary/20 flex items-center justify-center mb-3">
             <User className="h-10 w-10 text-primary" />
           </div>
-          <h1 className="text-xl font-black text-foreground">{name || 'Guest'}</h1>
-          <p className="text-sm text-muted-foreground">{phone || 'No phone set'}</p>
+          <h1 className="text-xl font-black text-foreground">{user?.full_name || 'Guest'}</h1>
+          <p className="text-sm text-muted-foreground">{user?.email || ''}</p>
         </div>
 
         {/* Tabs */}
@@ -84,8 +82,10 @@ export default function Profile() {
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">Personal Info</h2>
                 {!editing ? (
-                  <button onClick={() => { setEditName(name); setEditPhone(phone); setEditing(true); }}
-                    className="text-xs text-primary font-bold">
+                  <button
+                    onClick={() => { setEditPhone(phone); setEditing(true); }}
+                    className="text-xs text-primary font-bold"
+                  >
                     Edit
                   </button>
                 ) : (
@@ -99,21 +99,23 @@ export default function Profile() {
               <div className="space-y-4">
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Full Name</p>
-                  {editing ? (
-                    <input value={editName} onChange={e => setEditName(e.target.value)}
-                      className="glass-input w-full rounded-lg px-3 py-2 text-sm outline-none focus:shadow-[0_0_0_2px_rgba(255,208,0,0.4)]"
-                      placeholder="Your full name" />
-                  ) : (
-                    <p className="text-sm font-semibold text-foreground">{name || '—'}</p>
-                  )}
+                  <p className="text-sm font-semibold text-foreground">{user?.full_name || '—'}</p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-muted-foreground mb-1">Email</p>
+                  <p className="text-sm font-semibold text-foreground">{user?.email || '—'}</p>
                 </div>
 
                 <div>
                   <p className="text-xs text-muted-foreground mb-1">Phone</p>
                   {editing ? (
-                    <input value={editPhone} onChange={e => setEditPhone(e.target.value)}
+                    <input
+                      value={editPhone}
+                      onChange={e => setEditPhone(e.target.value)}
                       className="glass-input w-full rounded-lg px-3 py-2 text-sm outline-none focus:shadow-[0_0_0_2px_rgba(255,208,0,0.4)]"
-                      placeholder="07X XXX XXXX" />
+                      placeholder="07X XXX XXXX"
+                    />
                   ) : (
                     <p className="text-sm font-semibold text-foreground">{phone || '—'}</p>
                   )}
@@ -122,10 +124,10 @@ export default function Profile() {
             </div>
 
             <button
-              onClick={() => navigate('/')}
-              className="w-full glass rounded-2xl py-3 text-sm font-bold text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center gap-2"
+              onClick={async () => { await logout(); navigate('/auth'); }}
+              className="w-full glass rounded-2xl py-3 text-sm font-bold text-destructive hover:bg-destructive/10 transition-colors flex items-center justify-center gap-2"
             >
-              <LogOut className="h-4 w-4" /> Back to Home
+              <LogOut className="h-4 w-4" /> Sign Out
             </button>
           </div>
         ) : (
@@ -141,8 +143,11 @@ export default function Profile() {
               </div>
             ) : (
               orders.map((order, i) => (
-                <div key={order.id} className="glass-strong rounded-2xl p-4 animate-fade-in"
-                  style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'both' }}>
+                <div
+                  key={order.id}
+                  className="glass-strong rounded-2xl p-4 animate-fade-in"
+                  style={{ animationDelay: `${i * 50}ms`, animationFillMode: 'both' }}
+                >
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <p className="text-xs font-bold text-foreground">Order #{order.id}</p>
@@ -170,10 +175,15 @@ export default function Profile() {
                     ))}
                   </div>
 
-                  <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid var(--glass-border)' }}>
+                  <div
+                    className="flex items-center justify-between pt-2"
+                    style={{ borderTop: '1px solid var(--glass-border)' }}
+                  >
                     <span className="font-black text-primary text-lg">R{order.total}</span>
-                    <button onClick={() => handleReorder(order)}
-                      className="flex items-center gap-1.5 rounded-xl bg-primary/20 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/30 transition-colors">
+                    <button
+                      onClick={() => handleReorder(order)}
+                      className="flex items-center gap-1.5 rounded-xl bg-primary/20 px-3 py-1.5 text-xs font-bold text-primary hover:bg-primary/30 transition-colors"
+                    >
                       <RefreshCw className="h-3 w-3" /> Re-order
                     </button>
                   </div>
