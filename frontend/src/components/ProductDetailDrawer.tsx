@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Plus, Minus, ShoppingCart } from 'lucide-react';
+import { Plus, Minus, ShoppingCart } from 'lucide-react';
 import { useStore, type KotaItem, type BakeryItem } from '../lib/store';
 import { toast } from 'sonner';
 import {
