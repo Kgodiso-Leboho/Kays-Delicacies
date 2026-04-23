@@ -1,7 +1,6 @@
 import pool from "../config/db.js";
 import type { NextFunction, Response } from "express";
 import type { AuthRequest } from "../types/express.d.js";
-import type { User } from "../types/models.js";
 
 
 function totalPrice(items: any[]): number {
