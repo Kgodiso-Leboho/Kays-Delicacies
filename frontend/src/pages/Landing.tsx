@@ -11,7 +11,7 @@ export default function Landing() {
     <div className="min-h-screen bg-background">
       {/* Nav */}
       <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/40">
-        <div className="container flex items-center justify-between py-4">
+        <div className="container flex items-center justify-between py-4 px-4 md:px-8">
           <Link to="/" className="flex items-center gap-2">
             <img src={kdLogo} alt="KD" className="h-10 w-10 rounded-xl" />
             <span className="text-xl font-black tracking-tight text-foreground">Kays Delicacies</span>
@@ -32,7 +32,7 @@ export default function Landing() {
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background">
-        <div className="container pt-16 pb-8 md:pt-24 md:pb-12">
+        <div className="container pt-16 pb-8 md:pt-24 md:pb-12 px-4 md:px-8">
           <div className="text-center max-w-2xl mx-auto">
             <h1 className="text-5xl md:text-7xl font-black leading-[1.05] tracking-tight text-foreground">
               Delicious Homemade <span className="text-primary">Kotas & Bakes</span>
@@ -67,7 +67,7 @@ export default function Landing() {
 
       {/* Why Choose Us */}
       <section className="py-20 md:py-28">
-        <div className="container">
+        <div className="container px-4 md:px-8">
           <div className="max-w-xl">
             <span className="inline-block rounded-full border border-border/50 px-4 py-1.5 text-sm font-medium text-muted-foreground mb-4">
               Why Choose Us?
@@ -111,7 +111,7 @@ export default function Landing() {
 
       {/* Info Strip */}
       <section className="border-y border-border/30 bg-card/30">
-        <div className="container py-12 grid gap-8 md:grid-cols-3">
+        <div className="container py-12 px-4 md:px-8 grid gap-8 md:grid-cols-3">
           {[
             { icon: ShoppingBag, title: 'Easy Ordering', desc: 'Browse, customize, and order in minutes' },
             { icon: Clock, title: 'Fresh Daily', desc: 'Everything made fresh to order, every single day' },
@@ -132,7 +132,7 @@ export default function Landing() {
 
       {/* CTA */}
       <section className="py-20 md:py-28">
-        <div className="container">
+        <div className="container px-4 md:px-8">
           <div className="rounded-3xl bg-foreground p-12 md:p-20 text-center">
             <h2 className="text-3xl md:text-5xl font-black text-background">Ready to Dig In?</h2>
             <p className="mt-4 text-background/60 text-lg">Create an account and place your first order in minutes.</p>
