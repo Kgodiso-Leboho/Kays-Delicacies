@@ -96,11 +96,7 @@ export default function Auth() {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-[#FFFFFF] overflow-hidden">
 
-      {/* Background Glow */}
-      <div className="absolute inset-0">
-        <div className="absolute top-[-20%] left-1/2 w-[600px] h-[600px] bg-yellow-400/20 blur-[120px] rounded-full -translate-x-1/2" />
-        <div className="absolute bottom-[-20%] right-1/3 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full" />
-      </div>
+      
 
       {/* Glass Card */}
       <motion.div
@@ -114,7 +110,7 @@ export default function Auth() {
       >
         {/* Branding */}
         <div className="text-center mb-8">
-          <div className="w-14 h-14 mx-auto rounded-2xl bg-yellow-400 flex items-center justify-center shadow-lg shadow-yellow-400/40" />
+          
           <h1 className="text-yellow-400 text-2xl font-bold mt-4">
             Kays Delicacies
           </h1>
