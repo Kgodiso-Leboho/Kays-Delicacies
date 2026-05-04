@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShoppingBag, Clock, MapPin } from 'lucide-react';
+import { ArrowRight, ShoppingBag, Clock, MapPin, Star} from 'lucide-react';
+import { FaInstagram, FaFacebookF, FaTwitter } from 'react-icons/fa';
 import kdLogo from '../assets/kd-logo.png';
 import kotaHero from '../assets/biscuits-hero.png';
 import sconesHero from '../assets/scones-hero.png';
@@ -17,7 +18,6 @@ export default function Landing() {
             <span className="text-xl font-black tracking-tight text-foreground">Kays Delicacies</span>
           </Link>
 
-          {/* Centered pill nav */}
           <nav className="hidden md:flex items-center gap-1 rounded-full border border-border/50 bg-card/50 px-2 py-1.5">
             <Link to="/" className="rounded-full px-4 py-1.5 text-sm font-semibold text-foreground bg-primary/10">Home</Link>
             <Link to="/menu" className="rounded-full px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Menu</Link>
@@ -47,7 +47,6 @@ export default function Landing() {
             </div>
           </div>
 
-          {/* Product showcase - floating images */}
           <div className="mt-12 flex items-end justify-center gap-4 md:gap-8">
             <div className="w-36 md:w-52 animate-float" style={{ animationDelay: '0.5s' }}>
               <img src={sconesHero} alt="Fresh Scones" className="w-full drop-shadow-2xl" />
@@ -65,6 +64,36 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── NEW: How It Works ── */}
+      <section className="py-20 md:py-28 bg-card/20">
+        <div className="container px-4 md:px-8">
+          <div className="text-center max-w-xl mx-auto mb-14">
+            <span className="inline-block rounded-full border border-border/50 px-4 py-1.5 text-sm font-medium text-muted-foreground mb-4">
+              How It Works
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight">
+              Order in 3 easy steps.
+            </h2>
+          </div>
+          <div className="grid gap-8 md:grid-cols-3 relative">
+            <div className="hidden md:block absolute top-10 left-1/4 right-1/4 h-px bg-border/50" />
+            {[
+              { step: '01', title: 'Browse the Menu', desc: 'Explore our full range of kotas, dagwoods, scones, and bakery buckets.' },
+              { step: '02', title: 'Customise Your Order', desc: 'Pick your fillings, add-ons, and quantity — exactly the way you like it.' },
+              { step: '03', title: 'Collect or Get Delivered', desc: 'Choose a pickup time or delivery, pay securely, and enjoy!' },
+            ].map((s) => (
+              <div key={s.step} className="flex flex-col items-center text-center gap-4">
+                <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/10 border border-primary/20">
+                  <span className="text-3xl font-black text-primary">{s.step}</span>
+                </div>
+                <h3 className="text-lg font-bold text-foreground">{s.title}</h3>
+                <p className="text-sm text-muted-foreground max-w-xs">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Why Choose Us */}
       <section className="py-20 md:py-28">
         <div className="container px-4 md:px-8">
@@ -77,7 +106,6 @@ export default function Landing() {
             </h2>
           </div>
 
-          {/* Category Cards */}
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {[
               { img: kotaHero, title: 'Kotas & Chips', desc: 'Loaded with fresh ingredients and gourmet add-ons', color: 'from-amber-100 to-orange-50' },
@@ -109,6 +137,56 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── NEW: Featured Menu Items ── */}
+      <section className="py-20 md:py-28 bg-card/20">
+        <div className="container px-4 md:px-8">
+          <div className="flex items-end justify-between mb-14 flex-wrap gap-4">
+            <div>
+              <span className="inline-block rounded-full border border-border/50 px-4 py-1.5 text-sm font-medium text-muted-foreground mb-4">
+                Featured Items
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight">
+                Customer favourites.
+              </h2>
+            </div>
+            <Link to="/menu" className="inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline">
+              View Full Menu <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { name: 'Classic Kota', desc: 'Quarter loaf, polony, chips & atchar', price: 'R25', tag: 'Best Seller', img: kotaHero },
+              { name: 'Loaded Dagwood', desc: 'Egg, cheese, lettuce, tomato & meat', price: 'R55', tag: 'Popular', img: dagwoodHero },
+              { name: 'Scone Bucket (12)', desc: 'Fresh plain or raisin scones', price: 'R80', tag: 'Bulk Deal', img: sconesHero },
+              { name: 'Biscuit Bucket (24)', desc: 'Assorted homemade biscuits', price: 'R100', tag: 'Great Value', img: biscuitsHero },
+            ].map((item) => (
+              <Link
+                key={item.name}
+                to="/auth?tab=signup"
+                className="group rounded-2xl border border-border/30 bg-card overflow-hidden hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
+              >
+                <div className="relative bg-muted/30 flex items-center justify-center h-44">
+                  <img src={item.img} alt={item.name} className="h-36 object-contain drop-shadow-md group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                  <span className="absolute top-3 left-3 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
+                    {item.tag}
+                  </span>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-bold text-foreground">{item.name}</h3>
+                  <p className="mt-1 text-xs text-muted-foreground">{item.desc}</p>
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-lg font-black text-primary">{item.price}</span>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground bg-primary/10 rounded-full px-3 py-1">
+                      Order <ArrowRight className="h-3 w-3" />
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Info Strip */}
       <section className="border-y border-border/30 bg-card/30">
         <div className="container py-12 px-4 md:px-8 grid gap-8 md:grid-cols-3">
@@ -130,6 +208,45 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* ── NEW: Testimonials ── */}
+      <section className="py-20 md:py-28">
+        <div className="container px-4 md:px-8">
+          <div className="text-center max-w-xl mx-auto mb-14">
+            <span className="inline-block rounded-full border border-border/50 px-4 py-1.5 text-sm font-medium text-muted-foreground mb-4">
+              Reviews
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-foreground leading-tight">
+              What our customers say.
+            </h2>
+          </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { name: 'Thabo M.', review: 'The kota is absolutely fire! Best I have had in the whole township. Always fresh and loaded generously.', rating: 5 },
+              { name: 'Lerato K.', review: 'Ordered scone buckets for our office and everyone was raving. Will definitely be a regular order from now on!', rating: 5 },
+              { name: 'Sipho D.', review: 'The dagwood sandwich is huge and worth every cent. Delivery was on time and everything was still warm.', rating: 4 },
+            ].map((t) => (
+              <div key={t.name} className="rounded-3xl border border-border/30 bg-card p-6 flex flex-col gap-4">
+                <div className="flex gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${i < t.rating ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/30'}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">"{t.review}"</p>
+                <div className="mt-auto flex items-center gap-3 pt-4 border-t border-border/30">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-sm font-black text-primary">
+                    {t.name[0]}
+                  </div>
+                  <span className="text-sm font-bold text-foreground">{t.name}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-20 md:py-28">
         <div className="container px-4 md:px-8">
@@ -143,10 +260,32 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/30 py-8">
-        <div className="container text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Kays Delicacies. All rights reserved.
+      {/* ── UPDATED: Footer with social links ── */}
+      <footer className="border-t border-border/30 py-10">
+        <div className="container px-4 md:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-2">
+            <img src={kdLogo} alt="KD" className="h-8 w-8 rounded-lg" />
+            <span className="text-sm font-black tracking-tight text-foreground">Kays Delicacies</span>
+          </div>
+
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} Kays Delicacies. All rights reserved.
+          </p>
+
+          <div className="flex items-center gap-3">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-border/50 bg-card/50 text-muted-foreground hover:text-foreground hover:border-border transition-colors">
+              <FaInstagram className="h-4 w-4" />
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-border/50 bg-card/50 text-muted-foreground hover:text-foreground hover:border-border transition-colors">
+              <FaFacebookF className="h-4 w-4" />
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter / X"
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-border/50 bg-card/50 text-muted-foreground hover:text-foreground hover:border-border transition-colors">
+              <FaTwitter className="h-4 w-4" />
+            </a>
+          </div>
         </div>
       </footer>
     </div>
