@@ -46,10 +46,13 @@ export async function registerUser(req: AuthRequest, res: Response) {
             'INSERT INTO users (full_name, email, password) VALUES ($1, $2, $3) RETURNING id, full_name, email',
             [full_name, email, hashedPassword]
         );
-        
 
         const token = generateToken(newUser.rows[0]);
         res.cookie('token', token, cookieOptions);
+
+        const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
+        await sendEmail(email, 'Welcome to Kay\'s Delicacies', `Hi ${full_name}, welcome to Kay's Delicacies! We're excited to have you on board. \n please click the link below to verify your email: ${verifyUrl}`, `<p>Hi ${full_name}, welcome to Kay's Delicacies! We're excited to have you on board.</p>`);
+        
         return res.status(201).json({ message: 'User created successfully', user: newUser.rows[0]});
     }
     catch (error) {

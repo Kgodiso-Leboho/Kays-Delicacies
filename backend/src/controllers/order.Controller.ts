@@ -5,10 +5,8 @@ import type { AuthRequest } from "../types/express.d.js";
 
 function totalPrice(items: any[]): number {
     return items.reduce((total, item) => {
-        // 1. Get the base price of the item
         const basePrice = Number(item.price) || 0;
 
-        // 2. Calculate the price of extras (if they exist)
         let extrasTotal = 0;
         if (item.extras && Array.isArray(item.extras)) {
             extrasTotal = item.extras.reduce((sum: number, extra: any) => {
@@ -16,7 +14,6 @@ function totalPrice(items: any[]): number {
             }, 0);
         }
 
-        // 3. Multiply by quantity and add to the running total
         const quantity = Number(item.quantity) || 1;
         return total + (basePrice + extrasTotal) * quantity;
     }, 0);
@@ -31,10 +28,8 @@ export async function createOrder(req: AuthRequest, res: Response, next: NextFun
             return res.status(400).json({ message: 'Items are required to place an order' });
         }
 
-        // Calculate verified total
         const calculatedTotal = totalPrice(items);
 
-        // Insert order
         const orderResult = await pool.query(
             'INSERT INTO orders (user_id, items, price) VALUES ($1, $2, $3) RETURNING id',
             [userId, JSON.stringify(items), calculatedTotal]

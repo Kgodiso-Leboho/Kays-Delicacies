@@ -1,31 +1,29 @@
 import nodeMailer from 'nodemailer';
 
-// Create a transporter
 const transporter = nodeMailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
-    secure: false,
+    secure: false, 
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS
     }
 });
 
-const mailOptions = {
-    from: process.env.EMAIL_USER,
-    to: '', // recipient email
-    subject: '', // email subject
-    text: '', // email body,
-    html: '' // email body in HTML format
-}
-
-export const sendEmail = async (to: string, subject: string, text: string, html: string) => {
+export const sendEmail = async (to: string, subject: string, text: string, html?: string) => {
     try {
-        const options = { ...mailOptions, to, subject, text, html };
-        await transporter.sendMail(options);
-        console.log('Email sent successfully');
+        const info = await transporter.sendMail({
+            from: `"Kay's Delicacies" <${process.env.EMAIL_USER}>`, // Added a friendly name
+            to,
+            subject,
+            text,
+            html
+        });
+        
+        console.log('Message sent: %s', info.messageId);
+        return info;
     } catch (error) {
-        console.error('Error sending email:', error);
-        throw new Error('Failed to send email');
+        console.error('Nodemailer Error:', error);
+        throw new Error('Could not send email notification.');
     }
 }
