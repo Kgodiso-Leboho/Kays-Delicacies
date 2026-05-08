@@ -61,6 +61,31 @@ export async function registerUser(req: AuthRequest, res: Response) {
     }
 }
 
+export async function verifyEmail(req: AuthRequest, res: Response) {
+    try {
+        const { token } = req.query;
+
+        if (!token || typeof token !== 'string') {
+            return res.status(400).json({ message: 'Verification token is required' });
+        }
+
+        const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
+
+        const user = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.id]);
+
+        if (user.rows.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        await pool.query('UPDATE users SET email_verified = true WHERE id = $1', [decoded.id]); 
+        
+        return res.status(200).json({ message: 'Email verified successfully' });
+    } catch (error) {
+        console.error('Error verifying email:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+}
+
 export async function loginUser(req: AuthRequest, res: Response) {
     try{
         const { email, password } = req.body;
