@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import authRoutes from "./routes/auth.Routes";
+import orderRoutes from './routes/order.Routes.js';
 
 dotenv.config()
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(cookieParser())
 
 app.use('/api/auth', authRoutes);
+app.use('/api/orders', orderRoutes);
 
 let PORT = Number(process.env.PORT) || 5000;
 
