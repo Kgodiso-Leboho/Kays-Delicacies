@@ -51,7 +51,7 @@ export async function registerUser(req: AuthRequest, res: Response) {
         res.cookie('token', token, cookieOptions);
 
         const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
-        await sendEmail(email, 'Welcome to Kay\'s Delicacies', `Hi ${full_name}, welcome to Kay's Delicacies! We're excited to have you on board. \n please click the link below to verify your email: ${verifyUrl}`, `<p>Hi ${full_name}, welcome to Kay's Delicacies! We're excited to have you on board.</p>`);
+        await sendEmail(email, 'Welcome to Kay\'s Delicacies', `Hi ${full_name}, welcome to Kay's Delicacies! We're excited to have you on board. please click the link below to verify your email: ${verifyUrl}`, `<p>Hi ${full_name}, welcome to Kay's Delicacies! We're excited to have you on board. please click the link below to verify your email: ${verifyUrl}</p>`);
         
         return res.status(201).json({ message: 'User created successfully', user: newUser.rows[0]});
     }
