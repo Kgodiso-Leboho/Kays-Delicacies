@@ -15,6 +15,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 import { AuthProvider } from './context/AuthContext';
+import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -26,6 +27,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/verify-email" element={<VerifyEmailPage />} />
             <Route path="/menu" element={<AuthGuard><Index /></AuthGuard>} />
             <Route path="/checkout" element={<AuthGuard><Checkout /></AuthGuard>} />
             <Route path="/profile" element={<AuthGuard><Profile /></AuthGuard>} />
