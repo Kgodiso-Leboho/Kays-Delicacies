@@ -26,9 +26,9 @@ const generateToken = (user: User) => {
 
 export async function registerUser(req: AuthRequest, res: Response) {
     try{
-        const { full_name, email, password } = req.body;
+        const { username, email, password } = req.body;
 
-        if(!full_name || !email || !password) {
+        if(!username || !email || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
@@ -41,17 +41,16 @@ export async function registerUser(req: AuthRequest, res: Response) {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        
-        const newUser = await pool.query(
-            'INSERT INTO users (full_name, email, password) VALUES ($1, $2, $3) RETURNING id, full_name, email',
-            [full_name, email, hashedPassword]
-        );
-
-        const token = generateToken(newUser.rows[0]);
+        const token = crypto.randomBytes(32).toString('hex');
         res.cookie('token', token, cookieOptions);
 
+        const newUser = await pool.query(
+            'INSERT INTO users (username, email, password, verification_token) VALUES ($1, $2, $3, $4) RETURNING id, username, email',
+            [username, email, hashedPassword, token]
+        );
+
         const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
-        await sendEmail(email, 'Welcome to Kay\'s Delicacies', `Hi ${full_name}, welcome to Kay's Delicacies! We're excited to have you on board. please click the link below to verify your email: ${verifyUrl}`, `<p>Hi ${full_name}, welcome to Kay's Delicacies! We're excited to have you on board. please click the link below to verify your email: ${verifyUrl}</p>`);
+        await sendEmail(email, 'Welcome to Kay\'s Delicacies', `Hi ${username}, welcome to Kay's Delicacies! We're excited to have you on board. please click the link below to verify your email: ${verifyUrl}`, `<p>Hi ${username}, welcome to Kay's Delicacies! We're excited to have you on board. please click the link below to verify your email: ${verifyUrl}</p>`);
         
         return res.status(201).json({ message: 'User created successfully', user: newUser.rows[0]});
     }
@@ -69,15 +68,14 @@ export async function verifyEmail(req: AuthRequest, res: Response) {
             return res.status(400).json({ message: 'Verification token is required' });
         }
 
-        const decoded = jwt.verify(token, JWT_SECRET) as { id: number, email: string };
 
-        const user = await pool.query('SELECT * FROM users WHERE id = $1', [decoded.id]);
+        const user = await pool.query('SELECT * FROM users WHERE verification_token = $1', [token]);
 
         if (user.rows.length === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        await pool.query('UPDATE users SET email_verified = true WHERE id = $1', [decoded.id]); 
+        await pool.query('UPDATE users SET email_verified = true, verification_token = NULL WHERE id = $1', [user.rows[0].id]); 
         
         return res.status(200).json({ message: 'Email verified successfully' });
     } catch (error) {
@@ -115,7 +113,7 @@ export async function loginUser(req: AuthRequest, res: Response) {
             message: 'User logged in successfully',
             user: {
                 id: userData.id,
-                full_name: userData.full_name,
+                username: userData.username,
                 email: userData.email
             },
         })
